@@ -28,7 +28,7 @@ ifeq ($(strip $(TESTBENCH)),)
 endif
 	$(GHDL_CMD) -s $(GHDL_FLAGS) $(TESTBENCHPATH)
 
-compile:
+compile: $(check_files) $(check_tb)
 	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) $(FILES)
 	$(GHDL_CMD) -e $(GHDL_FLAGS) $(TESTBENCH)
 	$(GHDL_CMD) -r $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
