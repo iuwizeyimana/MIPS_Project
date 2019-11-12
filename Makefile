@@ -28,6 +28,11 @@ endif
 	$(GHDL_CMD) -s $(GHDL_FLAGS) src/$(FILE)$(VHDLEX)
 
 check_tb:
+ifeq ("$(wildcard $(TESTBENCHPATH))", "")
+		@echo "You don't have the associated testbench file!"
+		@echo "Put your testbench in tb/ with suffix _tb."
+		@exit 2
+endif
 	$(GHDL_CMD) -s $(GHDL_FLAGS) $(TESTBENCHPATH)
 
 compile: $(check_file) $(check_tb)
