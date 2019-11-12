@@ -8,7 +8,7 @@ TESTBENCHPATH = tb/${FILE}$(TBLEX)$(VHDLEX)
  
 #GHDL CONFIG
 GHDL_CMD = ghdl
-GHDL_FLAGS  = 
+GHDL_FLAGS  = --ieee=synopsys 
  
 SIMDIR = simu/
 # Simulation break condition
@@ -38,10 +38,10 @@ endif
 compile: $(check_file) $(check_tb)
 	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/$(FILE)$(VHDLEX)
 	$(GHDL_CMD) -e $(GHDL_FLAGS) $(TESTBENCH)
-	$(GHDL_CMD) -r $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
+	$(GHDL_CMD) -r $(GHDL_FLAGS) $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
  
 view:
-	@gtkwave *.vcd
+	@gtkwave ${TESTBENCH}.vcd
  
 clean:
 	@rm -rf *.vcd *.cf
