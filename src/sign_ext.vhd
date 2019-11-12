@@ -8,6 +8,7 @@ use ieee.numeric_std.all;
 -- output: The 32-bit output
 entity sign_ext is
     port(input: in std_logic_vector(15 downto 0);
+         clk: in std_logic;
          output: out std_logic_vector(31 downto 0));
 end sign_ext;
 
@@ -16,5 +17,10 @@ end sign_ext;
 -- resizes the input to be length equal to the specified vector
 architecture behavioral of sign_ext is
 begin
-    output <= std_logic_vector(resize(signed(input), output'length));
-end architecture;
+    calc: process(clk) is 
+    begin
+        if rising_edge(clk) then
+            output <= std_logic_vector(resize(signed(input), output'length));
+        end if;
+    end process;
+end behavioral;
