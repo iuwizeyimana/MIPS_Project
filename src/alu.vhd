@@ -2,7 +2,7 @@
 --our input to the ALU would be the 4 bit ALU control signal our input A and B and Carryin
 -- for the 4 bit ALU signal, the most significant bit will be used as a select for A_invert in the A_invert Mux, the next bit as the select for the B_invert Mux and the last two to select the operation at hand
 --we will first make the adder, and and or entities then use those to create the ALU entity
-
+library ieee;
 use ieee.std_logic_1164.all;
 -- 1 bit full adder
 entity FA is 
@@ -16,6 +16,7 @@ begin
     co <= (a and b) or (ci and (a xor b));
 end addition;
 
+library ieee;
 use ieee.std_logic_1164.all;
 -- 1 bit and
 entity one_bit_and is 
@@ -28,6 +29,7 @@ begin
 	and_out <= a and  b;
 end and_behav;
 
+library ieee;
 use ieee.std_logic_1164.all;
 -- 1 bit full or
 entity one_bit_or is 
@@ -41,9 +43,9 @@ begin
 end or_behav;
 
 --now we make the 1 bit ALU entity
-
+library ieee;
 use ieee.std_logic_1164.all;
-entity one_bit_ALU is ( ALU_control : in std_logic_vector(3 downto 0);
+entity one_bit_ALU is port ( ALU_control : in std_logic_vector(3 downto 0);
 			a,b, CarryIn: in std_logic;
 			CarryOut, Result: out std_logic);
 end one_bit_ALU;
@@ -97,6 +99,7 @@ begin
 		when "01" => Result <= or_result;
 		when "10" => Result <= add_result;
 		when "11" => Result <= set_result;
+		when others => Result <= 0;
 end ALU_1_behav;
 
 -- 4 bit ALU
