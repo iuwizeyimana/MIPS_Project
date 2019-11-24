@@ -87,7 +87,7 @@ begin
 	OR0: one_bit_or port map(a_int, b_int, or_result);
 	
 	if (adder_result > 0) then 
-			set_result <= 1;
+			set_result <= 1; --set on less than, b<a
 	else 
 			set_result <= 0;
 	end if;
