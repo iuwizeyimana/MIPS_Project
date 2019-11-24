@@ -92,7 +92,7 @@ begin
 			set_result <= 0;
 	end if;
 	-- the last 2 bits of the ALU control are used in the mux (switch case) to select the operation 
-	case ALU_control is
+	case ALU_control(1:0) is
 		when "00" => Result <= and_result;
 		when "01" => Result <= or_result;
 		when "10" => Result <= add_result;
