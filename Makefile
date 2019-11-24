@@ -1,13 +1,14 @@
 # vhdl files
-FILES = src/*
 VHDLEX = .vhd
- 
+TBLEX = _tb
+
 # testbench
-TESTBENCHPATH = tb/${TESTBENCH}$(VHDLEX)
+TESTBENCH = ${FILE}${TBLEX}
+TESTBENCHPATH = tb/${FILE}$(TBLEX)$(VHDLEX)
  
 #GHDL CONFIG
 GHDL_CMD = ghdl
-GHDL_FLAGS  = 
+GHDL_FLAGS  = --ieee=synopsys 
  
 SIMDIR = simu/
 # Simulation break condition
@@ -16,25 +17,31 @@ GHDL_SIM_OPT = --stop-time=1000ns
  
 WAVEFORM_VIEWER = gtkwave
  
-all: check_files check_tb compile view
+all: check_file check_tb compile view
  
-check_files:
-	$(GHDL_CMD) -s $(GHDL_FLAGS) $(FILES)
+check_file:
+ifeq ($(strip $(FILE)),)
+		@echo "FILE not set. Use FILE=value to set it."
+		@echo "Make sure you have an associated testbench file as well!"
+		@exit 2
+endif
+	$(GHDL_CMD) -s $(GHDL_FLAGS) src/$(FILE)$(VHDLEX)
 
 check_tb:
-ifeq ($(strip $(TESTBENCH)),)
-		@echo "TESTBENCH not set. Use TESTBENCH=value to set it."
+ifeq ("$(wildcard $(TESTBENCHPATH))", "")
+		@echo "You don't have the associated testbench file!"
+		@echo "Put your testbench in tb/ with suffix _tb."
 		@exit 2
 endif
 	$(GHDL_CMD) -s $(GHDL_FLAGS) $(TESTBENCHPATH)
 
-compile: $(check_files) $(check_tb)
-	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) $(FILES)
+compile: $(check_file) $(check_tb)
+	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/$(FILE)$(VHDLEX)
 	$(GHDL_CMD) -e $(GHDL_FLAGS) $(TESTBENCH)
-	$(GHDL_CMD) -r $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
+	$(GHDL_CMD) -r $(GHDL_FLAGS) $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
  
 view:
-	@gtkwave *.vcd
+	@gtkwave ${TESTBENCH}.vcd
  
 clean:
 	@rm -rf *.vcd *.cf

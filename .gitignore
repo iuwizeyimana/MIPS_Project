@@ -10,6 +10,9 @@ b~*.ad?
 .gdb_history
 *.pyc
 
+# GTKWAVE
+*.vcd
+
 # Vim
 # Swap
 [._]*.s[a-v][a-z]
