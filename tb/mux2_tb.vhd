@@ -6,14 +6,14 @@ end mux2_tb;
 
 architecture behavioral of mux2_tb is 
     signal s     : std_logic;
-    signal x,y,z : std_logic_vector(4 downto 0);
+    signal x,y,z : std_logic_vector(31 downto 0);
 
     -- The component we are testing is the 2-input multiplexer,
     -- so we declare that component here.
     component mux2 is
         port(selector: in std_logic;
-             input1, input2: in std_logic_vector(4 downto 0);
-             output: out std_logic_vector(4 downto 0));
+             input1, input2: in std_logic_vector(31 downto 0);
+             output: out std_logic_vector(31 downto 0));
     end component mux2;
 
 begin
@@ -39,12 +39,16 @@ begin
     -- based on the selector bit.
     process is
     begin
-        x <= "11010";
-        y <= "11011";
+        x <= "11110101010101010101000000011010";
+        y <= "00001100010000110000011000011011";
         s <= '0';
         wait for 1 ns;
-        x <= "11110";
-        y <= "11111";
+        x <= x"FEEDC0DE";
+        y <= x"00004B1D";
+        s <= '1';
+        wait for 1 ns;
+        x <= x"DEADBABE";
+        y <= x"B0000000";
         s <= '1';
         wait for 1 ns;
     end process;
