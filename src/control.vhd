@@ -22,87 +22,90 @@ use ieee.numeric_std.all;
 
 entity control is
     port(opcode: in std_logic_vector(5 downto 0);
+         clk: in std_logic;
          PCWriteCond, PCWrite, IorD, MemRead, MemWrite, MemtoReg, IRWrite, ALUSrcA, RegWrite, RegDst: out std_logic;
          PCSource, ALUSrcB, ALUOp: out std_logic_vector(1 downto 0));
 end control; 
 
 architecture behavioral of control is
 begin
-    process(opcode)
+    selecting: process(opcode)
     begin
-    case opcode is
-        when "100011" => -- lw
-            PCWriteCond <= '0';
-            PCWrite <= '0';
-            IorD <= '1';
-            MemRead <= '1';
-            MemWrite <= '0';
-            MemtoReg <= '1';
-            IRWrite <= '1';
-            ALUSrcA <= '1';
-            RegWrite <= '1';
-            RegDst <= '0';
-            PCSource <= "00";
-            ALUSrcB <= "10";
-            ALUOp <= "00";
-        when "000000" => -- add
-            PCWriteCond <= '0';
-            PCWrite <= '0';
-            IorD <= '0';
-            MemRead <= '0';
-            MemWrite <= '0';
-            MemtoReg <= '0';
-            IRWrite <= '1';
-            ALUSrcA <= '1';
-            RegWrite <= '1';
-            RegDst <= '1';
-            PCSource <= "00";
-            ALUSrcB <= "00";
-            ALUOp <= "10";
-        when "000010" => -- j
-            PCWriteCond <= '0';
-            PCWrite <= '1';
-            IorD <= '0';
-            MemRead <= '0';
-            MemWrite <= '0';
-            MemtoReg <= '0';
-            IRWrite <= '1';
-            ALUSrcA <= '0';
-            RegWrite <= '0';
-            RegDst <= '0';
-            PCSource <= "10";
-            ALUSrcB <= "00";
-            ALUOp <= "10";
-        when "000100" => -- beq
-            PCWriteCond <= '1';
-            PCWrite <= '0';
-            IorD <= '0';
-            MemRead <= '0';
-            MemWrite <= '0';
-            MemtoReg <= '0';
-            IRWrite <= '0';
-            ALUSrcA <= '0';
-            RegWrite <= '0';
-            RegDst <= '0';
-            PCSource <= "01";
-            ALUSrcB <= "11";
-            ALUOp <= "01";
-        when "001000" => -- addi
-            PCWriteCond <= '0';
-            PCWrite <= '1';
-            IorD <= '0';
-            MemRead <= '0';
-            MemWrite <= '0';
-            MemtoReg <= '0';
-            IRWrite <= '0';
-            ALUSrcA <= '0';
-            RegWrite <= '0';
-            RegDst <= '0';
-            PCSource <= "01";
-            ALUSrcB <= "11";
-            ALUOp <= "01";
-        when others =>
-    end case;
+        if rising_edge(clk) then
+            case opcode is
+                when "100011" => -- lw
+                    PCWriteCond <= '0';
+                    PCWrite <= '0';
+                    IorD <= '1';
+                    MemRead <= '1';
+                    MemWrite <= '0';
+                    MemtoReg <= '1';
+                    IRWrite <= '1';
+                    ALUSrcA <= '1';
+                    RegWrite <= '1';
+                    RegDst <= '0';
+                    PCSource <= "00";
+                    ALUSrcB <= "10";
+                    ALUOp <= "00";
+                when "000000" => -- add
+                    PCWriteCond <= '0';
+                    PCWrite <= '0';
+                    IorD <= '0';
+                    MemRead <= '0';
+                    MemWrite <= '0';
+                    MemtoReg <= '0';
+                    IRWrite <= '1';
+                    ALUSrcA <= '1';
+                    RegWrite <= '1';
+                    RegDst <= '1';
+                    PCSource <= "00";
+                    ALUSrcB <= "00";
+                    ALUOp <= "10";
+                when "000010" => -- j
+                    PCWriteCond <= '0';
+                    PCWrite <= '1';
+                    IorD <= '0';
+                    MemRead <= '0';
+                    MemWrite <= '0';
+                    MemtoReg <= '0';
+                    IRWrite <= '1';
+                    ALUSrcA <= '0';
+                    RegWrite <= '0';
+                    RegDst <= '0';
+                    PCSource <= "10";
+                    ALUSrcB <= "00";
+                    ALUOp <= "10";
+                when "000100" => -- beq
+                    PCWriteCond <= '1';
+                    PCWrite <= '0';
+                    IorD <= '0';
+                    MemRead <= '0';
+                    MemWrite <= '0';
+                    MemtoReg <= '0';
+                    IRWrite <= '0';
+                    ALUSrcA <= '0';
+                    RegWrite <= '0';
+                    RegDst <= '0';
+                    PCSource <= "01";
+                    ALUSrcB <= "11";
+                    ALUOp <= "01";
+                when "001000" => -- addi
+                    PCWriteCond <= '0';
+                    PCWrite <= '1';
+                    IorD <= '0';
+                    MemRead <= '0';
+                    MemWrite <= '0';
+                    MemtoReg <= '0';
+                    IRWrite <= '0';
+                    ALUSrcA <= '0';
+                    RegWrite <= '0';
+                    RegDst <= '0';
+                    PCSource <= "01";
+                    ALUSrcB <= "11";
+                    ALUOp <= "01";
+                when others =>
+            end case;
+        end if;
 end process;
 end behavioral;
 
