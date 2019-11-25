@@ -34,7 +34,7 @@ begin
         when "100011" => -- lw
             PCWriteCond <= '0';
             PCWrite <= '0';
-            IorD <= '0';
+            IorD <= '1';
             MemRead <= '1';
             MemWrite <= '0';
             MemtoReg <= '1';
