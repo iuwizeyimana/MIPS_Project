@@ -7,6 +7,7 @@ end ir_tb;
 architecture behavioral of ir_tb is 
     signal i            : std_logic_vector(31 downto 0);
     signal iW           : std_logic;
+    signal ck           : std_logic;
     signal op           : std_logic_vector(5 downto 0);
     signal r1,r2,muxOut : std_logic_vector(4 downto 0);
     signal shiftOut     : std_logic_vector(25 downto 0);
@@ -17,6 +18,7 @@ architecture behavioral of ir_tb is
 	component ir is
 		port(instruction: in std_logic_vector(31 downto 0);
 			 IRWrite: in std_logic;
+             clk: in std_logic;
 			 opcode: out std_logic_vector(5 downto 0);
 			 reg1, reg2, mux_output: out std_logic_vector(4 downto 0);
 			 shift_output: out std_logic_vector(25 downto 0);
@@ -36,6 +38,7 @@ begin
     port map (
         instruction 	 => i,
         IRWrite 		 => iW,
+        clk              => ck,
 	    opcode 			 => op,
         reg1 			 => r1,
         reg2 			 => r2,
@@ -43,6 +46,14 @@ begin
 		shift_output 	 => shiftOut,
 	    immediate_output => immOut
     );
+
+    gen_clk : process
+    begin
+        ck <= '0';
+        wait for 1 ns;
+        ck <= '1';
+        wait for 1 ns;
+    end process;
 
 	-- Example program and its disassembly:
 	-- Assume all numbers displayed are in hex unless stated otherwise
@@ -59,27 +70,28 @@ begin
 
     process is
     begin
+        wait for 1 ns;
         i  <= x"8d490064";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"01578820";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"01784822";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"014b4824";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"02538825";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"112afffa";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"214c0064";
         iW <= '1';
-        wait for 1 ns;
+        wait for 2 ns;
         i  <= x"08100000";
         iW <= '1';
         wait for 1 ns;
