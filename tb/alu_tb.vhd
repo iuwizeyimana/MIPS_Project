@@ -3,10 +3,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity thirtyTwo_bit_ALU_tb is
-end thirtyTwo_bit_ALU_tb;
+entity alu_tb is
+end alu_tb;
 
-architecture thirtyTwo_bit_ALU_behav of thirtyTwo_bit_ALU_tb is 
+architecture thirtyTwo_bit_ALU_behav of alu_tb is 
 	component thirtyTwo_bit_ALU
 		port(ALU_control : in std_logic_vector(3 downto 0);
 		     a, b: in std_logic_vector(31 downto 0);
@@ -25,9 +25,9 @@ begin
     gen_clk: process 
     begin
         clk <= '0';
-        wait for 1ps; 
+        wait for 1 ps; 
         clk <= '1';
-        wait for 1ps;
+        wait for 1 ps;
     end process;
 
 	process
@@ -38,37 +38,37 @@ begin
 		a <= X"12345678";
 		b <= X"00000008";
 --		CarryIn <= '0';
-		wait for 20ps;
+		wait for 20 ps;
 		
 		ALU_control <= X"1"; -- or
 		a <= X"00000110";
 		b <= X"00001100";
 	--	CarryIn <= '0';
-		wait for 20ps;
+		wait for 20 ps;
 		
 		ALU_control <= X"2";  -- add
 		a <= X"00000110";
 		b <= X"00000100";
 	--	CarryIn <= '0';
-		wait for 20ps;
+		wait for 20 ps;
 		
 		ALU_control <= X"6"; --sub
 		a <= X"00000110";
 		b <= X"00001100";
 	--	CarryIn <= '0';
-		wait for 20ps;
+		wait for 20 ps;
 		
 		ALU_control <= X"7"; --slt
 		a <= X"00000110";
 		b <= X"00001100";
 	--	CarryIn <= '0';
-		wait for 20ps;
+		wait for 20 ps;
 		
 		ALU_control <= X"C"; --NOR
 		a <= X"00000110";
 		b <= X"00001100";
 	--	CarryIn <= '0';
-		wait for 20ps;
+		wait for 20 ps;
 		
 		
 	end process;
