@@ -11,24 +11,27 @@ use ieee.numeric_std.all;
 
 entity mux4 is
     port(selector: in std_logic_vector(1 downto 0);
-         input1, input2, input3: in std_logic_vector(31 downto 0); 
+         input1, input2, input3: in std_logic_vector(31 downto 0);
+         clk: in std_logic;
          output: out std_logic_vector(31 downto 0));
 end mux4;
 
 architecture behavioral of mux4 is
 begin
-    process(selector)
+    selecting: process(clk, selector)
     begin
-        case selector is
-            when "00" =>
-                output <= input1;
-            when "01" =>
-                output <= x"00000004";
-            when "10" =>
-                output <= input2;
-            when "11" =>
-                output <= input3;
-            when others =>
-        end case;
+        if rising_edge(clk) then
+            case selector is
+                when "00" =>
+                    output <= input1;
+                when "01" =>
+                    output <= x"00000004";
+                when "10" =>
+                    output <= input2;
+                when "11" =>
+                    output <= input3;
+                when others =>
+            end case;
+        end if;
     end process;
 end behavioral;

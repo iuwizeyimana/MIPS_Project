@@ -4,7 +4,8 @@ use ieee.std_logic_1164.all;
 entity mux4_tb is
 end mux4_tb;
 
-architecture behavioral of mux4_tb is 
+architecture behavioral of mux4_tb is
+    signal ck      : std_logic;
     signal s       : std_logic_vector(1 downto 0);
     signal w,x,y,z : std_logic_vector(31 downto 0);
 
@@ -13,6 +14,7 @@ architecture behavioral of mux4_tb is
     component mux4 is
         port(selector: in std_logic_vector(1 downto 0);
              input1, input2, input3: in std_logic_vector(31 downto 0);
+             clk: in std_logic;
              output: out std_logic_vector(31 downto 0));
     end component mux4;
 
@@ -28,11 +30,20 @@ begin
     -- to the signals we declared eariler. 
     port map (
         selector => s,
-        input1 => w,
-        input2 => x,
-        input3 => y,
-        output => z
+        clk      => ck,
+        input1   => w,
+        input2   => x,
+        input3   => y,
+        output   => z
     );
+
+    gen_clk : process
+    begin
+        ck <= '0';
+        wait for 1 ns;
+        ck <= '1';
+        wait for 1 ns;
+    end process;
 
     -- The test for the 4-input multiplexer is very simple,
     -- all we do is feed the process three inputs, set the selector bits
@@ -44,21 +55,22 @@ begin
     -- y = 0x3FFFE000 
     process is
     begin
+        wait for 1 ns;
         w <= x"FACEB00C";
         x <= x"FFFF8000";
         y <= x"3FFFE000";
         s <= "00";
-        wait for 1 ns;
+        wait for 2 ns;
         w <= x"FACEB00C";
         x <= x"FFFF8000";
         y <= x"3FFFE000";
         s <= "01";
-        wait for 1 ns;
+        wait for 2 ns;
         w <= x"FACEB00C";
         x <= x"FFFF8000";
         y <= x"3FFFE000";
         s <= "10";
-        wait for 1 ns;
+        wait for 2 ns;
         w <= x"FACEB00C";
         x <= x"FFFF8000";
         y <= x"3FFFE000";
