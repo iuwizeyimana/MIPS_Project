@@ -10,22 +10,25 @@ use ieee.numeric_std.all;
 
 entity mux3 is
     port(selector: in std_logic_vector(1 downto 0);
-         input1, input2, input3: in std_logic_vector(31 downto 0); 
+         input1, input2, input3: in std_logic_vector(31 downto 0);
+         clk: in std_logic;
          output: out std_logic_vector(31 downto 0));
 end mux3;
 
 architecture behavioral of mux3 is
 begin
-    process(selector)
+    selecting: process(clk, selector)
     begin
-        case selector is
-            when "00" =>
-                output <= input1;
-            when "01" =>
-                output <= input2;
-            when "10" =>
-                output <= input3;
-            when others =>
-        end case;
-    end process;
+        if rising_edge(clk) then
+            case selector is
+                when "00" =>
+                    output <= input1;
+                when "01" =>
+                    output <= input2;
+                when "10" =>
+                    output <= input3;
+                when others =>
+            end case;
+        end if;
+        end process;
 end behavioral;
