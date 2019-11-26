@@ -8,7 +8,7 @@ architecture behavioral of ir_tb is
     signal i            : std_logic_vector(31 downto 0);
     signal iW           : std_logic;
     signal ck           : std_logic;
-    signal op           : std_logic_vector(5 downto 0);
+    signal op, fC       : std_logic_vector(5 downto 0);
     signal r1,r2,muxOut : std_logic_vector(4 downto 0);
     signal shiftOut     : std_logic_vector(25 downto 0);
     signal immOut       : std_logic_vector(15 downto 0);
@@ -19,7 +19,7 @@ architecture behavioral of ir_tb is
 		port(instruction: in std_logic_vector(31 downto 0);
 			 IRWrite: in std_logic;
              clk: in std_logic;
-			 opcode: out std_logic_vector(5 downto 0);
+			 opcode, func_code: out std_logic_vector(5 downto 0);
 			 reg1, reg2, mux_output: out std_logic_vector(4 downto 0);
 			 shift_output: out std_logic_vector(25 downto 0);
 			 immediate_output: out std_logic_vector(15 downto 0));
@@ -40,6 +40,7 @@ begin
         IRWrite 		 => iW,
         clk              => ck,
 	    opcode 			 => op,
+        func_code        => fC,
         reg1 			 => r1,
         reg2 			 => r2,
 		mux_output 		 => muxOut,

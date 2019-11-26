@@ -13,7 +13,7 @@ entity ir is
     port(instruction: in std_logic_vector(31 downto 0);
          IRWrite: in std_logic;
          clk: in std_logic;
-         opcode: out std_logic_vector(5 downto 0);
+         opcode, func_code: out std_logic_vector(5 downto 0);
          reg1, reg2, mux_output: out std_logic_vector(4 downto 0);
          shift_output: out std_logic_vector(25 downto 0);
          immediate_output: out std_logic_vector(15 downto 0));
@@ -30,6 +30,7 @@ begin
             mux_output       <= instruction(15 downto 11);
             shift_output     <= instruction(25 downto 0);
             immediate_output <= instruction(15 downto 0);
+            func_code        <= instruction(5 downto 0);
         end if;
     end process;
 end behavioral;
