@@ -90,49 +90,51 @@ begin
     gen_clk: process 
     begin
         clk <= '0';
-        wait for 5ps; 
+        wait for 1ps; 
         clk <= '1';
-        wait for 5ps;
+        wait for 1ps;
     end process;
 
 	process
 	begin
-		ALU_control <= X"0"; --AND
+	   
+	    
+		ALU_control <= X"2"; --AND
 		a <= "0110";
 		b <= "1100";
 		CarryIn <= '0';
-		wait for 10ps;
+		wait for 20ps;
 		
 		ALU_control <= X"1"; -- or
 		a <= "0110";
 		b <= "1100";
-		CarryIn <= '0';
-		wait for 10ps;
+	--	CarryIn <= '0';
+		wait for 20ps;
 		
 		ALU_control <= X"2";  -- add
 		a <= "0110";
-		b <= "1100";
+		b <= "0100";
 		CarryIn <= '0';
-		wait for 10ps;
+		wait for 20ps;
 		
 		ALU_control <= X"6"; --sub
 		a <= "0110";
 		b <= "1100";
 		CarryIn <= '0';
-		wait for 10ps;
+		wait for 20ps;
 		
 		ALU_control <= X"7"; --slt
 		a <= "0110";
 		b <= "1100";
 		CarryIn <= '0';
-		wait for 10ps;
+		wait for 20ps;
 		
 		ALU_control <= X"C"; --NOR
 		a <= "0110";
 		b <= "1100";
-		CarryIn <= '0';
-		wait for 10ps;
+	--	CarryIn <= '0';
+		wait for 20ps;
+		
 		
 	end process;
 end four_bit_ALU_behav;
-

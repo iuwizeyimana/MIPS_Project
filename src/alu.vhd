@@ -55,7 +55,7 @@ end one_bit_ALU;
 -- ALU_control(3) is A_invert, ALU_control(2) is B_invert and ALU_control(1:0) is the operation
 architecture ALU_1_behav of one_bit_ALU is
 	--let us declare internal signals
-	signal a_int, b_int: std_logic;
+	signal a_int, b_int, c_int: std_logic;
 	signal and_result, or_result, adder_result, set_result, co : std_logic;
 	component FA
 		port(a, b, ci: in std_logic;
@@ -72,9 +72,13 @@ architecture ALU_1_behav of one_bit_ALU is
 		     or_out: out std_logic);
 	end component;
 begin 
-    process(ALU_control, CarryIn) is
+    process(ALU_control,a,b, clk) is 
 	begin 
+	if rising_edge(clk) then 
+	
 	-- invert the two inputs in case they need to be inverted
+	 --  a_int <= '0';
+	    c_int <= CarryIn;
     if ALU_control(3) = '1' then
 		 a_int <= not a;
 	else 
@@ -86,9 +90,12 @@ begin
 	else 
 		b_int <= b;
 	end if;
+	
+	end if;
+	
 	end process;
 	
-	FA0: FA port map(a => a_int, b => b_int, ci => CarryIn, s => adder_result, co => co);
+	FA0: FA port map(a => a_int, b => b_int, ci => c_int, s => adder_result, co => co);
 	AND0: one_bit_and port map(a => a_int, b => b_int, and_out => and_result);
 	OR0: one_bit_or port map(a => a_int,b => b_int, or_out => or_result);
 	
@@ -99,10 +106,10 @@ begin
 	if rising_edge(clk) then 
      --   set_result <= adder_result; 	
 	case ALU_control(1 downto 0) is
-		when "00" => Result <= and_result; CarryOut <= '0';
-		when "01" => Result <= or_result; CarryOut <= '0';
+		when "00" => Result <= and_result; 
+		when "01" => Result <= or_result;
 		when "10" => Result <= adder_result; CarryOut <= co;
-		when "11" => Result <= adder_result; CarryOut <= '0';
+		when "11" => Result <= adder_result; CarryOut <= co;
 		when others =>  Result <= '0'; CarryOut <= '0';
 	end case;
 	end if;
