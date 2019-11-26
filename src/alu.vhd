@@ -149,12 +149,13 @@ entity thirtyTwo_bit_ALU is
 		 a,b: in std_logic_vector (31 downto 0);
 		clk : in std_logic;  --we don't need a CarryIn input for the 32 bit ALU
 		CarryOut: out std_logic;
+		Zero: out std_logic;
 		Result: out std_logic_vector(31 downto 0));
 end thirtyTwo_bit_ALU;
 
 architecture thirtyTwo_bit_ALU_behav of thirtyTwo_bit_ALU is
 	signal c: std_logic_vector(7 downto 0); --internal ripple carries
-
+	signal Result_int: std_logic_vector(31 downto 0);
 	component four_bit_ALU
 		port ( ALU_control, a,b: in std_logic_vector (3 downto 0);
 			CarryIn, clk: in std_logic;
@@ -170,17 +171,25 @@ begin
 	else 
 		c(0) <= '0';
 	end if;
-	end process;
+     end process;
+
+     process(Result_int) is 
+	begin
+	 if (Result_int = X"00000000") then Zero <= '1';
+		else Zero <= '0';
+	end if;
+		Result <= Result_int;
+     end process;
 	
 	--now time for the 32 bit ALU using 4 bit ALU components
-	four0: four_bit_ALU port map(ALU_control => ALU_control,a => a(3 downto 0),b =>  b(3 downto 0),CarryIn =>  c(0), clk => clk, CarryOut => c(1), Result => Result(3 downto 0));
-	four1: four_bit_ALU port map(ALU_control => ALU_control,a => a(7 downto 4),b => b(7 downto 4),CarryIn => c(1),clk => clk, CarryOut => c(2),Result =>  Result(7 downto 4));
-	four2: four_bit_ALU port map (ALU_control => ALU_control,a => a(11 downto 8),b => b(11 downto 8),CarryIn => c(2),clk => clk, CarryOut => c(3), Result => Result(11 downto 8));
-	four3: four_bit_ALU port map(ALU_control => ALU_control,a => a(15 downto 12),b => b(15 downto 12),CarryIn => c(3),clk => clk, CarryOut => c(4),Result => Result(15 downto 12));
-	four4: four_bit_ALU port map(ALU_control => ALU_control,a => a(19 downto 16),b => b(19 downto 16),CarryIn => c(4),clk => clk, CarryOut => c(5),Result => Result(19 downto 16));
-	four5: four_bit_ALU port map (ALU_control => ALU_control,a => a(23 downto 20),b => b(23 downto 20),CarryIn => c(5),clk => clk, CarryOut => c(6),Result => Result(23 downto 20));
-	four6: four_bit_ALU port map(ALU_control => ALU_control,a => a(27 downto 24),b => b(27 downto 24),CarryIn => c(6), clk => clk, CarryOut => c(7),Result => Result(27 downto 24));
-	four7: four_bit_ALU port map(ALU_control => ALU_control,a => a(31 downto 28),b => b(31 downto 28),CarryIn => c(7),clk => clk, CarryOut => CarryOut, Result => Result(31 downto 28));
+	four0: four_bit_ALU port map(ALU_control => ALU_control,a => a(3 downto 0),b =>  b(3 downto 0),CarryIn =>  c(0), clk => clk, CarryOut => c(1), Result => Result_int(3 downto 0));
+	four1: four_bit_ALU port map(ALU_control => ALU_control,a => a(7 downto 4),b => b(7 downto 4),CarryIn => c(1),clk => clk, CarryOut => c(2),Result =>  Result_int(7 downto 4));
+	four2: four_bit_ALU port map (ALU_control => ALU_control,a => a(11 downto 8),b => b(11 downto 8),CarryIn => c(2),clk => clk, CarryOut => c(3), Result => Result_int(11 downto 8));
+	four3: four_bit_ALU port map(ALU_control => ALU_control,a => a(15 downto 12),b => b(15 downto 12),CarryIn => c(3),clk => clk, CarryOut => c(4),Result => Result_int(15 downto 12));
+	four4: four_bit_ALU port map(ALU_control => ALU_control,a => a(19 downto 16),b => b(19 downto 16),CarryIn => c(4),clk => clk, CarryOut => c(5),Result => Result_int(19 downto 16));
+	four5: four_bit_ALU port map (ALU_control => ALU_control,a => a(23 downto 20),b => b(23 downto 20),CarryIn => c(5),clk => clk, CarryOut => c(6),Result => Result_int(23 downto 20));
+	four6: four_bit_ALU port map(ALU_control => ALU_control,a => a(27 downto 24),b => b(27 downto 24),CarryIn => c(6), clk => clk, CarryOut => c(7),Result => Result_int(27 downto 24));
+	four7: four_bit_ALU port map(ALU_control => ALU_control,a => a(31 downto 28),b => b(31 downto 28),CarryIn => c(7),clk => clk, CarryOut => CarryOut, Result => Result_int(31 downto 28));
 	
 
 
