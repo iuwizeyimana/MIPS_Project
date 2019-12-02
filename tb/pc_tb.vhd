@@ -6,12 +6,13 @@ end pc_tb;
 
 architecture behavioral of pc_tb is 
     signal x, y       : std_logic_vector(31 downto 0);
-    signal ck         : std_logic;
+    signal sel, ck    : std_logic;
 
     -- The component we are testing is the program counter,
     -- so we declare that component here.
     component pc is
         port(input:  in std_logic_vector(31 downto 0);
+             sel:    in std_logic;
              clk:    in std_logic;
              output: out std_logic_vector(31 downto 0));
     end component pc;
@@ -28,6 +29,7 @@ begin
     -- to the signals we declared eariler. 
     port map (
         input             => x,
+        sel               => sel,
         clk               => ck,
         output            => y
     );
@@ -45,18 +47,25 @@ begin
     process is
     begin
         x <= x"8000A000";
+        sel <= '1';
         wait for 1 ns;
         x <= x"A0008000";
+        sel <= '1';
         wait for 1 ns;
         x <= x"ABADCAFE";
+        sel <= '1';
         wait for 1 ns;
         x <= x"BABEBABE";
+        sel <= '0';
         wait for 1 ns;
         x <= x"00000400";
+        sel <= '0';
         wait for 1 ns;
         x <= x"FFFFFFFF";
+        sel <= '0';
         wait for 1 ns;
         x <= x"000000F0";
+        sel <= '1';
         wait for 1 ns;
     end process;
 end behavioral;
