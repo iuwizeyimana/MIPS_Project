@@ -6,15 +6,17 @@ use ieee.std_logic_unsigned.all;
 entity mips is 
     port(
             clk:         in std_logic;
-            current_pc:  in std_logic_vector(31 downto 0);
             instruction: in std_logic_vector(31 downto 0);
-            ALUout:      out std_logic_vector(31 downto 0);
-            new_pc:      out std_logic_vector(31 downto 0)
+            ALUout:      out std_logic_vector(31 downto 0)
         );
 end mips;
 
 architecture behavioral of mips is
     signal PC_INT            : std_logic_vector(31 downto 0);
+    signal NEW_PC            : std_logic_vector(31 downto 0);
+    signal CURRENT_PC        : std_logic_vector(31 downto 0);
+    signal MEM_IN            : std_logic_vector(31 downto 0);
+    signal MEM_OUT           : std_logic_vector(31 downto 0);
     signal OPCODE            : std_logic_vector(5 downto 0);
     signal REG1              : std_logic_vector(4 downto 0);
     signal REG2              : std_logic_vector(4 downto 0);
@@ -22,6 +24,7 @@ architecture behavioral of mips is
     signal MUX_IR_OUT        : std_logic_vector(4 downto 0);
     signal FUNC_CODE         : std_logic_vector(5 downto 0);
     signal WRITE_REG         : std_logic_vector(4 downto 0);
+    signal WRITE_DATA        : std_logic_vector(31 downto 0);
     signal IMM_32EXT         : std_logic_vector(31 downto 0);
     signal SL2_32            : std_logic_vector(31 downto 0);
     signal READDATA2         : std_logic_vector(31 downto 0);
@@ -31,6 +34,8 @@ architecture behavioral of mips is
     signal ALUCTRL_SIGNAL    : std_logic_vector(3 downto 0);
     signal ALU_RESULT        : std_logic_vector(31 downto 0);
     signal ALU_ZERO          : std_logic;
+    signal ALU_CARRYOUT      : std_logic;
+    signal OUT_ALU           : std_logic_vector(31 downto 0);
     signal SL2_26_IN         : std_logic_vector(25 downto 0); -- Input to SL2 unit 
     signal SL2_26_TO_28      : std_logic_vector(27 downto 0); -- Output from SL2 unit
     signal JUMP_ADDR         : std_logic_vector(31 downto 0); -- Real jump address
@@ -54,6 +59,12 @@ architecture behavioral of mips is
              clk:    in std_logic;
              output: out std_logic_vector(31 downto 0));
     end component pc;
+
+    component mdr is
+        port(mem_in:  in std_logic_vector(31 downto 0);
+             clk:     in std_logic;
+             mem_out: out std_logic_vector(31 downto 0));
+    end component mdr;
 
     component ir is
 		port(instruction: in std_logic_vector(31 downto 0);
@@ -125,6 +136,12 @@ architecture behavioral of mips is
 			Result: out std_logic_vector(31 downto 0) );
 	end component;
 
+    component alu_out
+        port(in_alu:  in std_logic_vector(31 downto 0);
+             clk:     in std_logic;
+             out_alu: out std_logic_vector(31 downto 0));
+    end component;
+
     component alu_control
 		port(ALUOP : in std_logic_vector(1 downto 0);
 		     func_code : in std_logic_vector(5 downto 0);
@@ -147,6 +164,22 @@ architecture behavioral of mips is
 
 begin
 
+    program_counter : pc
+
+    port map (
+        input  => NEW_PC,
+        clk    => clk,
+        output => CURRENT_PC
+    );
+
+    mr : mdr
+
+    port map (
+        mem_in  => MEM_IN,
+        clk     => clk,
+        mem_out => MEM_OUT
+    );
+
     mips_ir : ir
 
     port map ( 
@@ -165,11 +198,21 @@ begin
     write_reg_mux : mux2_5bit
 
     port map ( 
-        selector => MEMTOREG,
+        selector => REGDST,
         input1   => REG2,
         input2   => MUX_IR_OUT,
         clk      => clk,
         output   => WRITE_REG
+    );
+
+    write_data_mux : mux2
+
+    port map ( 
+        selector => MEMTOREG,
+        input1   => MEM_OUT,
+        input2   => OUT_ALU,
+        clk      => clk,
+        output   => WRITE_DATA
     );
 
     mips_regfile : regfile
@@ -178,8 +221,7 @@ begin
         readRegisterFile1 => REG1,
         readRegisterFile2 => REG2,
         writeRegister     => WRITE_REG,
-        -- TODO: Figure out what writeData should map to
-        --writeData         => ,
+        writeData         => WRITE_DATA,
         regWrite          => REGWRITE,
         clk               => clk,
         readData1         => READDATA1,
@@ -239,10 +281,17 @@ begin
         a           => READDATA1_MUX_OUT,
         b           => READDATA2_MUX_OUT,
         clk         => clk,
-        -- TODO: Figure out what CarryOut should map to
-        --CarryOut    => ,
+        CarryOut    => ALU_CARRYOUT,
         Zero        => ALU_ZERO,
         Result      => ALU_RESULT
+    );
+
+    alu_out_buffer : alu_out
+
+    port map (
+        in_alu  => ALU_RESULT,
+        clk     => clk,
+        out_alu => OUT_ALU
     );
 
     mips_sl2_26_28 : shiftleft1
@@ -253,7 +302,7 @@ begin
         output => SL2_26_TO_28
     );
 
-    mips_new_pc : mux3
+    new_pc_mux : mux3
     
     port map (
         selector => PCSOURCE,
@@ -261,7 +310,7 @@ begin
         input2   => PC_INT,
         input3   => JUMP_ADDR,
         clk      => clk,
-        output   => new_pc
+        output   => NEW_PC
     );
 
     mips_control_unit : control
