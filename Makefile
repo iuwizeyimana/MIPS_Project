@@ -5,7 +5,7 @@ TBLEX = _tb
 # testbench
 TESTBENCH = ${FILE}${TBLEX}
 TESTBENCHPATH = tb/${FILE}$(TBLEX)$(VHDLEX)
- 
+
 #GHDL CONFIG
 GHDL_CMD = ghdl
 GHDL_FLAGS  = --ieee=synopsys 
@@ -41,7 +41,8 @@ compile: $(check_file) $(check_tb)
 	$(GHDL_CMD) -r $(GHDL_FLAGS) $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
  
 view:
-	@gtkwave ${TESTBENCH}.vcd
+	-gtkwave ${TESTBENCH}.vcd
+	-rm -rf ${TESTBENCH}
  
 clean:
-	@rm -rf *.vcd *.cf
+	-rm -rf *.vcd *.cf *.o
