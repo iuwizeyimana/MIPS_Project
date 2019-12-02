@@ -6,7 +6,6 @@ use ieee.std_logic_unsigned.all;
 entity mips is 
     port(
             clk:         in std_logic;
-            instruction: in std_logic_vector(31 downto 0);
             ALUout:      out std_logic_vector(31 downto 0)
         );
 end mips;
@@ -15,6 +14,9 @@ architecture behavioral of mips is
     signal PC_INT            : std_logic_vector(31 downto 0);
     signal NEW_PC            : std_logic_vector(31 downto 0);
     signal CURRENT_PC        : std_logic_vector(31 downto 0);
+    signal PC_SELECT         : std_logic;
+    signal MEM_ADDR          : std_logic_vector(31 downto 0);
+    signal INSTRUCTION       : std_logic_vector(31 downto 0);
     signal MEM_IN            : std_logic_vector(31 downto 0);
     signal MEM_OUT           : std_logic_vector(31 downto 0);
     signal OPCODE            : std_logic_vector(5 downto 0);
@@ -56,6 +58,7 @@ architecture behavioral of mips is
 
     component pc is
         port(input:  in std_logic_vector(31 downto 0);
+             sel:    in std_logic;
              clk:    in std_logic;
              output: out std_logic_vector(31 downto 0));
     end component pc;
@@ -168,8 +171,19 @@ begin
 
     port map (
         input  => NEW_PC,
+        sel    => PC_SELECT,
         clk    => clk,
         output => CURRENT_PC
+    );
+
+    pc_select_mux : mux2
+
+    port map (
+        selector => IORD,
+        input1   => CURRENT_PC,
+        input2   => OUT_ALU,
+        clk      => clk,
+        output   => MEM_ADDR
     );
 
     mr : mdr
@@ -183,7 +197,7 @@ begin
     mips_ir : ir
 
     port map ( 
-        instruction      => instruction,
+        instruction      => INSTRUCTION,
         IRWrite          => IRWRITE,
         clk              => clk,
         opcode           => OPCODE,
@@ -334,5 +348,7 @@ begin
 
     JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
     JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
+    NEW_PC                  <= x"00000000";
+    PC_SELECT               <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
     PC_INT                  <= current_pc + 4;
 end behavioral;
