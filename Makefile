@@ -45,6 +45,7 @@ else
 endif
 	$(GHDL_CMD) -e $(GHDL_FLAGS) $(TESTBENCH)
 	$(GHDL_CMD) -r $(GHDL_FLAGS) $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
+	-rm -rf ${TESTBENCH}
  
 view:
 	-gtkwave ${TESTBENCH}.vcd
