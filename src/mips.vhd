@@ -373,6 +373,49 @@ begin
    if rising_edge(clk) then 
 	if (reset = '1') then
     		NEW_PC  <= x"00000000";
+            signal PC_INT            : std_logic_vector(31 downto 0);
+            signal CURRENT_PC        : std_logic_vector(31 downto 0);
+            signal PC_SELECT         : std_logic;
+            signal MEM_ADDR          : std_logic_vector(31 downto 0);
+            signal INSTRUCTION       : std_logic_vector(31 downto 0);
+            signal MEM_IN            : std_logic_vector(31 downto 0);
+            signal MEM_OUT           : std_logic_vector(31 downto 0);
+            signal OPCODE            : std_logic_vector(5 downto 0);
+            signal REG1              : std_logic_vector(4 downto 0);
+            signal REG2              : std_logic_vector(4 downto 0);
+            signal IMM_OUT           : std_logic_vector(15 downto 0);
+            signal MUX_IR_OUT        : std_logic_vector(4 downto 0);
+            signal FUNC_CODE         : std_logic_vector(5 downto 0);
+            signal WRITE_REG         : std_logic_vector(4 downto 0);
+            signal WRITE_DATA        : std_logic_vector(31 downto 0);
+            signal IMM_32EXT         : std_logic_vector(31 downto 0);
+            signal SL2_32            : std_logic_vector(31 downto 0);
+            signal READDATA2         : std_logic_vector(31 downto 0);
+            signal READDATA1         : std_logic_vector(31 downto 0);
+            signal READDATA1_MUX_OUT : std_logic_vector(31 downto 0);
+            signal READDATA2_MUX_OUT : std_logic_vector(31 downto 0);
+            signal ALUCTRL_SIGNAL    : std_logic_vector(3 downto 0);
+            signal ALU_RESULT        : std_logic_vector(31 downto 0);
+            signal ALU_ZERO          : std_logic;
+            signal ALU_CARRYOUT      : std_logic;
+            signal OUT_ALU           : std_logic_vector(31 downto 0);
+            signal SL2_26_IN         : std_logic_vector(25 downto 0); -- Input to SL2 unit 
+            signal SL2_26_TO_28      : std_logic_vector(27 downto 0); -- Output from SL2 unit
+            signal JUMP_ADDR         : std_logic_vector(31 downto 0); -- Real jump address
+            signal NEW_PC_MUX_OUT    : std_logic_vector(31 downto 0);
+            signal PCWRITECOND       : std_logic;
+            signal PCWRITE           : std_logic;
+            signal IORD              : std_logic;
+            signal MEMREAD           : std_logic;
+            signal MEMWRITE          : std_logic;
+            signal MEMTOREG          : std_logic;
+            signal IRWRITE           : std_logic;
+            signal PCSOURCE          : std_logic_vector(1 downto 0);
+            signal ALUOP             : std_logic_vector(1 downto 0);
+            signal ALUSRCB           : std_logic_vector(1 downto 0);
+            signal ALUSRCA           : std_logic;
+            signal REGWRITE          : std_logic;
+            signal REGDST            : std_logic;
 	end if;
     	JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
     	JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
