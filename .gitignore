@@ -86,6 +86,3 @@ flycheck_*.el
 
 # DS_Store
 .DS_Store
-
-# Since we have two different versions of the Makefile, we will add it .gitignore so that they do not clash
-Makefile
