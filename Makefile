@@ -49,7 +49,6 @@ endif
  
 view:
 	-gtkwave ${TESTBENCH}.vcd
-	-rm -rf ${TESTBENCH}
  
 clean:
 	-rm -rf *.vcd *.cf *.o
