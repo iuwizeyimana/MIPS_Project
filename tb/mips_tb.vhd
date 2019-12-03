@@ -36,8 +36,9 @@ begin
     begin
 	wait for 1 ns;
 	reset <= '1';
-	wait for 3 ns;
-	reset <= '0';	
+	wait for 50 ns;
+	reset <= '0';
+	wait for 100 ns;	
     end process;
 
 end behavioral;
