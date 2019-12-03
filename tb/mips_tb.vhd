@@ -5,13 +5,13 @@ entity mips_tb is
 end mips_tb;
 
 architecture behavioral of mips_tb is 
-    signal clk    : std_logic;
+    signal clk, reset  : std_logic;
     signal ALUout : std_logic_vector(31 downto 0);
 
     -- The component we are testing is the 2-input multiplexer,
     -- so we declare that component here.
     component mips is
-        port(clk:    in std_logic;
+        port(clk, reset :    in std_logic;
              ALUout: out std_logic_vector(31 downto 0));
     end component mips;
 
@@ -21,6 +21,7 @@ begin
 
     port map (
         clk    => clk,
+	reset  => reset,
         ALUout => ALUout
     );
 
@@ -30,6 +31,13 @@ begin
         wait for 1 ns;
         clk <= '1';
         wait for 1 ns;
+    end process;
+    process
+    begin
+	wait for 1 ns;
+	reset <= '1';
+	wait for 3 ns;
+	reset <= '0';	
     end process;
 
 end behavioral;

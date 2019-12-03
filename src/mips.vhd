@@ -5,7 +5,7 @@ use ieee.std_logic_unsigned.all;
 
 entity mips is 
     port(
-            clk:         in std_logic;
+            clk, reset:         in std_logic;
             ALUout:      out std_logic_vector(31 downto 0)
         );
 end mips;
@@ -366,9 +366,18 @@ begin
         ALUOp       => ALUOP
     );
 
-    JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
-    JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
-    NEW_PC                  <= x"00000000";
-    PC_SELECT               <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
-    PC_INT                  <= current_pc + 4;
+
+process (clk, reset) is 
+begin 
+
+   if rising_edge(clk) then 
+	if (reset = '1') then
+    		NEW_PC  <= x"00000000";
+	end if;
+    	JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
+    	JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
+    	PC_SELECT               <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
+    	PC_INT                  <= current_pc + 4;
+  end if ;
+end process; 
 end behavioral;
