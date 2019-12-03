@@ -1,3 +1,5 @@
+SRC_DIR = src/
+
 # vhdl files
 VHDLEX = .vhd
 TBLEX = _tb
@@ -36,7 +38,11 @@ endif
 	$(GHDL_CMD) -s $(GHDL_FLAGS) $(TESTBENCHPATH)
 
 compile: $(check_file) $(check_tb)
+ifeq ("$(FILE)", "mips")
+	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/*.vhd
+else
 	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/$(FILE)$(VHDLEX)
+endif
 	$(GHDL_CMD) -e $(GHDL_FLAGS) $(TESTBENCH)
 	$(GHDL_CMD) -r $(GHDL_FLAGS) $(TESTBENCH) $(GHDL_SIM_OPT) --vcd=$(TESTBENCH).vcd
  
