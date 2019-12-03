@@ -11,10 +11,18 @@ entity memory is
 end memory;
 
 architecture behavioral of memory is
-    type mem_arr is array(0 to 3200) of std_logic_vector(31 downto 0);
-    signal mem : mem_arr;
+    type mem_arr is array(0 to 7) of std_logic_vector(31 downto 0);
+    signal mem : mem_arr := (
+                                    x"8d490000",
+                                    x"8d6a0001",
+                                    x"012a8820",
+                                    x"022a4822",
+                                    x"014b4824",
+                                    x"014b4825",
+                                    x"200b0008",
+                                    x"08000000"
+                            );
 begin
-    instruction <= mem(to_integer(unsigned(address)));
     writeToMem: process(clk) is
     begin
         if rising_edge(clk) then
