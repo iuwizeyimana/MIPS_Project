@@ -63,6 +63,14 @@ architecture behavioral of mips is
              output: out std_logic_vector(31 downto 0));
     end component pc;
 
+    component memory is
+        port(address: in std_logic_vector(31 downto 0);
+             data: in std_logic_vector(31 downto 0);
+             clk: in std_logic;
+             MemRead, MemWrite: in std_logic;
+             instruction: out std_logic_vector(31 downto 0));
+    end component memory;
+
     component mdr is
         port(mem_in:  in std_logic_vector(31 downto 0);
              clk:     in std_logic;
@@ -176,6 +184,7 @@ begin
         output => CURRENT_PC
     );
 
+
     pc_select_mux : mux2
 
     port map (
@@ -184,6 +193,17 @@ begin
         input2   => OUT_ALU,
         clk      => clk,
         output   => MEM_ADDR
+    );
+
+    mips_memory : memory
+
+    port map (
+        address     => MEM_ADDR,
+        data        => READDATA2,
+        clk         => clk,
+        MemRead     => MEMREAD,
+        MemWrite    => MEMWRITE,
+        instruction => INSTRUCTION
     );
 
     mr : mdr
