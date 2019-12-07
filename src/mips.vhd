@@ -59,6 +59,12 @@ architecture behavioral of mips is
     signal REGWRITE          : std_logic;
     signal REGDST            : std_logic;
 
+-- The following internal signals are for initialization purposes
+    signal PC_to_Read	     : std_logic_vector(31 downto 0);
+    signal PC_MUX_Select     : std_logic;
+    signal Read              : std_logic;
+    signal Write	     : std_logic;
+
     component pc is
         port(input:  in std_logic_vector(31 downto 0);
              sel:    in std_logic;
@@ -93,7 +99,7 @@ architecture behavioral of mips is
     component control is
         port(opcode: in std_logic_vector(5 downto 0);
              clk: in std_logic;
-             PCWriteCond, PCWrite, IorD, MemRead, MemWrite, MemtoReg, IRWrite, ALUSrcA, RegWrite, RegDst: out std_logic;
+             PCWriteCond, PCWrite, IorD, MemRead, MemWrite, MemtoReg, IRWrite, ALUSrcA, RegWrite, regDst: out std_logic;
              PCSource, ALUSrcB, ALUOp: out std_logic_vector(1 downto 0));
     end component control;
 
@@ -181,7 +187,7 @@ begin
     program_counter : pc
 
     port map (
-        input  => NEW_PC,
+        input  => PC_to_Read,
         sel    => PC_SELECT,
         clk    => clk,
         output => CURRENT_PC
@@ -191,7 +197,7 @@ begin
     pc_select_mux : mux2
 
     port map (
-        selector => IORD,
+        selector => PC_MUX_Select,
         input1   => CURRENT_PC,
         input2   => OUT_ALU,
         clk      => clk,
@@ -204,8 +210,8 @@ begin
         address     => MEM_ADDR,
         data        => READDATA2,
         clk         => clk,
-        MemRead     => MEMREAD,
-        MemWrite    => MEMWRITE,
+        MemRead     => Read,
+        MemWrite    => Write,
         instruction => INSTRUCTION
     );
 
@@ -230,6 +236,25 @@ begin
         mux_output       => MUX_IR_OUT,
         shift_output     => SL2_26_IN,
         immediate_output => IMM_OUT
+    );
+
+     mips_ctr:  control 
+        port map(
+	   opcode      => OPCODE,
+           clk	       => clk,
+           PCWriteCond => PCWRITECOND,
+	   PCWrite     => PCWRITE,
+           IorD        => IORD,
+           MemRead     => MEMREAD,
+           MemWrite    => MEMWRITE,
+           MemtoReg    => MEMTOREG,
+           IRWrite     => IRWRITE,
+           ALUSrcA     => ALUSRCA,
+           RegWrite    => REGWRITE,
+           regDst      => REGDsT,
+           PCSource    => PCSOURCE,
+           ALUSrcB     => ALUSRCB,
+           ALUOp       => ALUOP
     );
 
     write_reg_mux : mux2_5bit
@@ -370,18 +395,22 @@ begin
     );
 
 
-process (clk) is 
+process (clk, stall) is 
 begin 
 
   if rising_edge(clk) then 
 	if (stall  = '1') then
-    	    NEW_PC            <= pc_init;
+    	    PC_to_Read        <= pc_init;
             PC_SELECT         <= pc_sel;    
-            IORD              <= mux_sel;   
-            MEMREAD           <= mem_read;    
-            MEMWRITE          <= mem_write;
+            PC_MUX_Select     <= mux_sel;   
+            Read              <= mem_read;    
+            Write            <= mem_write;
 	else
-    	PC_SELECT               <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
+    	PC_SELECT       <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
+	PC_to_Read	<=  NEW_PC;
+	PC_MUX_Select   <=  IorD;
+	Read		<=  MEMREAD;
+	Write		<=  MEMWRITE;
 	end if;
 	JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
     	JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;

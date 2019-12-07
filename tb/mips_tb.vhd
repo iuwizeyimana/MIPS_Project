@@ -44,7 +44,7 @@ begin
     begin
 	wait for 1 ns;
         stall 	  <= '1';
-	pc_init   <= x"00000000";
+	pc_init   <= x"00000004";
 	pc_sel    <='1';
 	mux_sel	  <= '0';
 	mem_read  <= '1';
