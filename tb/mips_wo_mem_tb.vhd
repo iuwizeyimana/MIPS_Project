@@ -36,7 +36,7 @@ begin
     process
     begin
 	wait for 1 ns;
-	instruction   <= x"8d490000";
+	instruction   <= x"014B4824";
 	wait for 10 ns;
 	instruction   <= x"8d6A0001";
         wait for 10 ns;

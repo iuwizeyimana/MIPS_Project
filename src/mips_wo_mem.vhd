@@ -168,6 +168,27 @@ begin
         immediate_output => IMM_OUT
     );
 
+   
+    
+     mips_ctr:  control 
+        port map(
+	   opcode      => OPCODE,
+           clk	       => clk,
+           PCWriteCond => PCWRITECOND,
+	   PCWrite     => PCWRITE,
+           IorD        => IORD,
+           MemRead     => MEMREAD,
+           MemWrite    => MEMWRITE,
+           MemtoReg    => MEMTOREG,
+           IRWrite     => IRWRITE,
+           ALUSrcA     => ALUSRCA,
+           RegWrite    => REGWRITE,
+           RegDst      => REGDsT,
+           PCSource    => PCSOURCE,
+           ALUSrcB     => ALUSRCB,
+           ALUOp       => ALUOP
+    );
+
     write_reg_mux : mux2_5bit
 
     port map ( 
