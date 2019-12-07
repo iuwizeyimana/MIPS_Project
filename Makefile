@@ -15,7 +15,7 @@ GHDL_FLAGS  = --ieee=synopsys
 SIMDIR = simu/
 # Simulation break condition
 #GHDL_SIM_OPT = --assert-level=error
-GHDL_SIM_OPT = --stop-time=1000ns
+GHDL_SIM_OPT = --stop-time=58ns
  
 WAVEFORM_VIEWER = gtkwave
  
