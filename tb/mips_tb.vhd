@@ -53,7 +53,6 @@ begin
 	stall 	  <= '0';
     wait for 989 ns;
     end process;
-
 end behavioral;
 
 
