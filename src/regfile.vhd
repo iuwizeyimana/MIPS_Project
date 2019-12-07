@@ -31,15 +31,19 @@ architecture behavioral of regfile is
     -- Thus, create an array of 32-bit registers, each register 
     -- holding a 32-bit value
     type reg_arr is array(0 to 31) of std_logic_vector(31 downto 0);
-    signal reg_data : reg_arr;
+    signal reg_data :
+    reg_arr := reg_arr'(
+                       x"00000000", x"00000000", x"00000000", x"00000000", 
+                       x"00000000", x"00000000", x"00000000", x"00000000", 
+                       x"00000000", x"00000000", x"00000000", x"00000000",
+                       x"00000000", x"00000000", x"00000000", x"00000000", 
+                       x"00000000", x"00000000", x"00000000", x"00000000",
+                       x"00000000", x"00000000", x"00000000", x"00000000", 
+                       x"00000000", x"00000000", x"00000000", x"00000000",
+                       x"00000000", x"00000000", x"00000000", x"00000000"
+                     );
 
 begin
-    -- The primary behavior of the register file is to output
-    -- the data associated with the registers determined by the
-    -- readRegisterFileN inputs.
-    -- TODO: Synchronize output with clock as well?
-    readData1 <= reg_data(to_integer(unsigned(readRegisterFile1)));
-    readData2 <= reg_data(to_integer(unsigned(readRegisterFile2)));
 
 -- In the clocked process below, we are synchronizing the regWrite signal
 -- with the clock. In the aptly named process 'writeReg' below, if the 
@@ -48,6 +52,11 @@ begin
 writeReg: process(clk) is
 begin
     if rising_edge(clk) then
+        -- The primary behavior of the register file is to output
+        -- the data associated with the registers determined by the
+        -- readRegisterFileN inputs.
+        readData1 <= reg_data(to_integer(unsigned(readRegisterFile1)));
+        readData2 <= reg_data(to_integer(unsigned(readRegisterFile2)));
         if regWrite = '1' then
             reg_data(to_integer(unsigned(writeRegister))) <= writeData;
         end if;
