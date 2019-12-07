@@ -51,7 +51,7 @@ begin
                     PCWriteCond <= '0';
                     PCWrite <= '1';
                     IorD <= '0';
-                    MemRead <= '0';
+                    MemRead <= '1';
                     MemWrite <= '0';
                     MemtoReg <= '0';
                     IRWrite <= '1';
@@ -65,7 +65,7 @@ begin
                     PCWriteCond <= '0';
                     PCWrite <= '1';
                     IorD <= '0';
-                    MemRead <= '0';
+                    MemRead <= '1';
                     MemWrite <= '0';
                     MemtoReg <= '0';
                     IRWrite <= '1';
@@ -79,13 +79,13 @@ begin
                     PCWriteCond <= '1';
                     PCWrite <= '1';
                     IorD <= '0';
-                    MemRead <= '0';
+                    MemRead <= '1';
                     MemWrite <= '0';
-                    MemtoReg <= '0';
+                    MemtoReg <= 'X';
                     IRWrite <= '0';
                     ALUSrcA <= '0';
                     RegWrite <= '0';
-                    RegDst <= '0';
+                    RegDst <= 'X';
                     PCSource <= "01";
                     ALUSrcB <= "11";
                     ALUOp <= "01";
@@ -93,16 +93,16 @@ begin
                     PCWriteCond <= '0';
                     PCWrite <= '1';
                     IorD <= '0';
-                    MemRead <= '0';
+                    MemRead <= '1';
                     MemWrite <= '0';
                     MemtoReg <= '0';
                     IRWrite <= '0';
                     ALUSrcA <= '0';
-                    RegWrite <= '0';
-                    RegDst <= '0';
+                    RegWrite <= '1';
+                    RegDst <= '1';
                     PCSource <= "01";
                     ALUSrcB <= "11";
-                    ALUOp <= "01";
+                    ALUOp <= "00";
                 when others =>
             end case;
         end if;
