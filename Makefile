@@ -40,6 +40,8 @@ endif
 compile: $(check_file) $(check_tb)
 ifeq ("$(FILE)", "mips")
 	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/*.vhd
+else ("$(FILE)", "mips_wo_mem")
+	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/*.vhd
 else
 	$(GHDL_CMD) -a $(GHDL_FLAGS) $(TESTBENCHPATH) src/$(FILE)$(VHDLEX)
 endif
