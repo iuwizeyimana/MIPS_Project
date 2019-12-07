@@ -5,8 +5,11 @@ use ieee.std_logic_unsigned.all;
 
 entity mips is 
     port(
-            clk, reset:         in std_logic;
-            ALUout:      out std_logic_vector(31 downto 0)
+            clk, stall		:  in std_logic;
+	    pc_init		:  in std_logic_vector(31 downto 0);
+	    pc_sel, mux_sel	:  in std_logic;
+	    mem_read, mem_write	:  in std_logic; 		
+            ALUout		:  out std_logic_vector(31 downto 0)
         );
 end mips;
 
@@ -367,62 +370,22 @@ begin
     );
 
 
-process ( reset) is 
+process (clk) is 
 begin 
 
- --  if rising_edge(clk) then 
-	if (reset = '1') then
-    	     NEW_PC            <= x"00000000"; --
-           -- PC_INT            <= x"00000000";
-             CURRENT_PC        <= x"00000000";
-           -- PC_SELECT         <= '1';
-           -- MEM_ADDR          <= x"00000000";
-             INSTRUCTION       <= x"8d490000";
-           -- MEM_IN            <= x"00000000";
-           -- MEM_OUT           <= x"00000000";
-           -- OPCODE            <= "000000";
-           -- REG1              <= "00000";
-           -- REG2              <= "00000";
-           -- IMM_OUT           <= x"0000";
-           -- MUX_IR_OUT        <= "00000";
-           -- FUNC_CODE         <= "000000";
-           -- WRITE_REG         <= "00000";
-           -- WRITE_DATA        <= x"00000000";
-           -- IMM_32EXT         <= x"00000000";
-           -- SL2_32            <= x"00000000";
-           -- READDATA2         <= x"00000000";
-           -- READDATA1         <= x"00000000";
-           -- READDATA1_MUX_OUT <= x"00000000";
-           -- READDATA2_MUX_OUT <= x"00000000";
-           -- ALUCTRL_SIGNAL    <= x"0";
-           -- ALU_RESULT        <= x"00000000";
-           -- ALU_ZERO          <= '0';
-           -- ALU_CARRYOUT      <= '0';
-           -- OUT_ALU           <= x"00000000";
-           -- SL2_26_IN         <= "00000000000000000000000000";
-           -- SL2_26_TO_28      <= "0000000000000000000000000000";
-           -- JUMP_ADDR         <= x"00000000";
-           -- NEW_PC_MUX_OUT    <= x"00000000";
-            PCWRITECOND       <= '1';    --
-            PCWRITE           <= '1';    --
-            IORD              <= '0';    --
-            MEMREAD           <= '1';    --
-            MEMWRITE          <= '0';
-	   -- MEMTOREG          <= '0';
-           -- IRWRITE           <= '0';
-           -- PCSOURCE          <= "00";
-           -- ALUOP             <= "00";
-           -- ALUSRCB           <= "00";
-           -- ALUSRCA           <= '0';
-           -- REGWRITE          <= '0';
-           -- REGDST            <= '0';
---	end if;
-	else 
-    	JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
-    	JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
+  if rising_edge(clk) then 
+	if (stall  = '1') then
+    	    NEW_PC            <= pc_init;
+            PC_SELECT         <= pc_sel;    
+            IORD              <= mux_sel;   
+            MEMREAD           <= mem_read;    
+            MEMWRITE          <= mem_write;
+	else
     	PC_SELECT               <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
+	end if;
+	JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
+    	JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
     	PC_INT                  <= current_pc + 4;
-	end if; 
---  end if ;
+ end if ;
 end process; 
 end behavioral;
