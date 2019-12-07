@@ -20,12 +20,17 @@ architecture behavioral of memory is
                                     x"022a4822",
                                     x"014b4824",
                                     x"014b4825",
-                                    x"200b0008",
-                                    x"08000000"
+                                    x"08000000",
+                                    x"200b0008"
                             );
 begin
     writeToMem: process(clk) is
     begin
+        if rising_edge(clk) then
+            report "The current address is " & integer'image(to_integer(unsigned(address)));
+            instruction <= mem(to_integer(unsigned(address)));
+        end if;
+
         if rising_edge(clk) then
             if MemWrite = '1' then
                 mem(to_integer(unsigned(address))) <= in_data;
@@ -36,10 +41,6 @@ begin
             if MemRead = '1' then
                 out_data <= mem(to_integer(unsigned(address))); 
             end if;
-        end if;
-
-        if rising_edge(clk) then
-                instruction <= mem(to_integer(unsigned(address)));
         end if;
     end process;
 end behavioral;
