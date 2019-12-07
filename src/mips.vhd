@@ -314,7 +314,7 @@ begin
     port map (
         selector => ALUSRCA,
         input1   => READDATA1,
-        input2   => current_pc,
+        input2   => CURRENT_PC,
         clk      => clk,
         output   => READDATA1_MUX_OUT
     );
@@ -401,7 +401,8 @@ begin
 process (clk, stall) is 
 begin 
 
-  if rising_edge(clk) then 
+  if rising_edge(clk) then
+
 	if (stall  = '1') then
     	    PC_to_Read        <= pc_init;
             PC_SELECT         <= pc_sel;    
@@ -414,10 +415,11 @@ begin
             PC_MUX_Select <=  IorD;
             Read		  <=  MEMREAD;
             Write		  <=  MEMWRITE;
+            ALUout        <=  ALU_RESULT;
 	end if;
 end if ;
-    JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
+    JUMP_ADDR(31 downto 28) <= CURRENT_PC(31 downto 28);
     JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
-    PC_INT                  <= current_pc + 1;
+    PC_INT                  <= CURRENT_PC + 1;
 end process; 
 end behavioral;
