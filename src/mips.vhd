@@ -5,11 +5,11 @@ use ieee.std_logic_unsigned.all;
 
 entity mips is 
     port(
-            clk, stall		:  in std_logic;
-	    pc_init		:  in std_logic_vector(31 downto 0);
-	    pc_sel, mux_sel	:  in std_logic;
-	    mem_read, mem_write	:  in std_logic; 		
-            ALUout		:  out std_logic_vector(31 downto 0)
+        clk, stall		    : in std_logic;
+	    pc_init		        : in std_logic_vector(31 downto 0);
+	    pc_sel, mux_sel	    : in std_logic;
+	    mem_read, mem_write	: in std_logic; 		
+        ALUout		        : out std_logic_vector(31 downto 0)
         );
 end mips;
 
@@ -20,6 +20,7 @@ architecture behavioral of mips is
     signal PC_SELECT         : std_logic;
     signal MEM_ADDR          : std_logic_vector(31 downto 0);
     signal INSTRUCTION       : std_logic_vector(31 downto 0);
+    signal OUT_DATA          : std_logic_vector(31 downto 0); 
     signal MEM_IN            : std_logic_vector(31 downto 0);
     signal MEM_OUT           : std_logic_vector(31 downto 0);
     signal OPCODE            : std_logic_vector(5 downto 0);
@@ -63,7 +64,7 @@ architecture behavioral of mips is
     signal PC_to_Read	     : std_logic_vector(31 downto 0);
     signal PC_MUX_Select     : std_logic;
     signal Read              : std_logic;
-    signal Write	     : std_logic;
+    signal Write	         : std_logic;
 
     component pc is
         port(input:  in std_logic_vector(31 downto 0);
@@ -74,10 +75,11 @@ architecture behavioral of mips is
 
     component memory is
         port(address: in std_logic_vector(31 downto 0);
-             data: in std_logic_vector(31 downto 0);
+             in_data: in std_logic_vector(31 downto 0);
              clk: in std_logic;
              MemRead, MemWrite: in std_logic;
-             instruction: out std_logic_vector(31 downto 0));
+             instruction: out std_logic_vector(31 downto 0);
+             out_data: out std_logic_vector(31 downto 0));
     end component memory;
 
     component mdr is
@@ -208,17 +210,18 @@ begin
 
     port map (
         address     => MEM_ADDR,
-        data        => READDATA2,
+        in_data     => READDATA2,
         clk         => clk,
         MemRead     => Read,
         MemWrite    => Write,
-        instruction => INSTRUCTION
+        instruction => INSTRUCTION,
+        out_data    => OUT_DATA
     );
 
     mr : mdr
 
     port map (
-        mem_in  => MEM_IN,
+        mem_in  => OUT_DATA,
         clk     => clk,
         mem_out => MEM_OUT
     );
@@ -240,10 +243,10 @@ begin
 
      mips_ctr:  control 
         port map(
-	   opcode      => OPCODE,
+           opcode      => OPCODE,
            clk	       => clk,
            PCWriteCond => PCWRITECOND,
-	   PCWrite     => PCWRITE,
+           PCWrite     => PCWRITE,
            IorD        => IORD,
            MemRead     => MEMREAD,
            MemWrite    => MEMWRITE,
@@ -368,8 +371,8 @@ begin
     
     port map (
         selector => PCSOURCE,
-        input1   => ALU_RESULT,
-        input2   => PC_INT,
+        input1   => PC_INT,
+        input2   => ALU_RESULT,
         input3   => JUMP_ADDR,
         clk      => clk,
         output   => NEW_PC
@@ -404,17 +407,17 @@ begin
             PC_SELECT         <= pc_sel;    
             PC_MUX_Select     <= mux_sel;   
             Read              <= mem_read;    
-            Write            <= mem_write;
+            Write             <= mem_write;
 	else
-    	PC_SELECT       <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
-	PC_to_Read	<=  NEW_PC;
-	PC_MUX_Select   <=  IorD;
-	Read		<=  MEMREAD;
-	Write		<=  MEMWRITE;
+            PC_SELECT     <= (ALU_ZERO and PCWRITECOND) or PCWRITE; 
+            PC_to_Read	  <=  NEW_PC;
+            PC_MUX_Select <=  IorD;
+            Read		  <=  MEMREAD;
+            Write		  <=  MEMWRITE;
 	end if;
-	JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
-    	JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
-    	PC_INT                  <= current_pc + 4;
- end if ;
+end if ;
+    JUMP_ADDR(31 downto 28) <= current_pc(31 downto 28);
+    JUMP_ADDR(27 downto 0)  <= SL2_26_to_28;
+    PC_INT                  <= current_pc + 1;
 end process; 
 end behavioral;
