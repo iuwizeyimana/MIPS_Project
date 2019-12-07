@@ -4,10 +4,11 @@ use ieee.numeric_std.all;
 
 entity memory is
     port(address: in std_logic_vector(31 downto 0);
-         data: in std_logic_vector(31 downto 0);
+         in_data: in std_logic_vector(31 downto 0);
          clk: in std_logic;
          MemRead, MemWrite: in std_logic;
-         instruction: out std_logic_vector(31 downto 0));
+         instruction: out std_logic_vector(31 downto 0);
+         out_data: out std_logic_vector(31 downto 0));
 end memory;
 
 architecture behavioral of memory is
@@ -27,14 +28,18 @@ begin
     begin
         if rising_edge(clk) then
             if MemWrite = '1' then
-                mem(to_integer(unsigned(address))) <= data;
+                mem(to_integer(unsigned(address))) <= in_data;
             end if;
         end if;
 
         if rising_edge(clk) then
             if MemRead = '1' then
-                instruction <= mem(to_integer(unsigned(address))); 
+                out_data <= mem(to_integer(unsigned(address))); 
             end if;
+        end if;
+
+        if rising_edge(clk) then
+                instruction <= mem(to_integer(unsigned(address)));
         end if;
     end process;
 end behavioral;
