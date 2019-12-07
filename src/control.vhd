@@ -29,7 +29,7 @@ end control;
 
 architecture behavioral of control is
 begin
-    selecting: process(opcode)
+    selecting: process(opcode, clk)
     begin
         if rising_edge(clk) then
             case opcode is

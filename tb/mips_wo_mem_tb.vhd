@@ -37,11 +37,11 @@ begin
     begin
 	wait for 1 ns;
 	instruction   <= x"014B4824";
-	wait for 10 ns;
+	wait for 50 ns;
 	instruction   <= x"8d6A0001";
-        wait for 10 ns;
+        wait for 50 ns;
         instruction   <= x"022A4822";
-	wait for 10 ns;
+	wait for 50 ns;
     end process;
 
 end behavioral;

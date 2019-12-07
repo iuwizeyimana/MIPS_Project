@@ -68,7 +68,7 @@ architecture behavioral of mips_wo_mem  is
     component control is
         port(opcode: in std_logic_vector(5 downto 0);
              clk: in std_logic;
-             PCWriteCond, PCWrite, IorD, MemRead, MemWrite, MemtoReg, IRWrite, ALUSrcA, RegWrite, RegDst: out std_logic;
+             PCWriteCond, PCWrite, IorD, MemRead, MemWrite, MemtoReg, IRWrite, ALUSrcA, RegWrite, regDst: out std_logic;
              PCSource, ALUSrcB, ALUOp: out std_logic_vector(1 downto 0));
     end component control;
 
@@ -183,7 +183,7 @@ begin
            IRWrite     => IRWRITE,
            ALUSrcA     => ALUSRCA,
            RegWrite    => REGWRITE,
-           RegDst      => REGDsT,
+           regDst      => REGDsT,
            PCSource    => PCSOURCE,
            ALUSrcB     => ALUSRCB,
            ALUOp       => ALUOP
