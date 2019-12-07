@@ -5,15 +5,16 @@ entity memory_tb is
 end memory_tb;
 
 architecture behavioral of memory_tb is 
-    signal clk, MemRead, MemWrite     : std_logic;
-    signal address, data, instruction : std_logic_vector(31 downto 0);
+    signal clk, MemRead, MemWrite                  : std_logic;
+    signal in_data, out_data, address, instruction : std_logic_vector(31 downto 0);
     
     component memory is
         port(address: in std_logic_vector(31 downto 0);
-             data: in std_logic_vector(31 downto 0);
+             in_data: in std_logic_vector(31 downto 0);
              clk: in std_logic;
              MemRead, MemWrite: in std_logic;
-             instruction: out std_logic_vector(31 downto 0));
+             instruction: out std_logic_vector(31 downto 0);
+             out_data: out std_logic_vector(31 downto 0));
     end component memory;
 
 begin
@@ -22,11 +23,12 @@ begin
 
     port map (
         address     => address,
-        data        => data,
+        in_data     => in_data,
         clk         => clk,
         MemRead     => MemRead,
         MemWrite    => MemWrite,
-        instruction => instruction
+        instruction => instruction,
+        out_data    => out_data
     );
 
     gen_clk : process
@@ -41,42 +43,42 @@ begin
     begin
         wait for 1 ns;
         address  <= x"00000000";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000001";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000002";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1'; 
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000003";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000004";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000005";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000006";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 2 ns;
         address  <= x"00000007";
-        data     <= x"00000000";
+        in_data     <= x"00000000";
         MemRead  <= '1';
         MemWrite <= '0';
         wait for 1 ns; -- Final wait
