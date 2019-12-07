@@ -35,7 +35,7 @@ begin
             case opcode is
                 when "100011" => -- lw
                     PCWriteCond <= '0';
-                    PCWrite <= '0';
+                    PCWrite <= '1';
                     IorD <= '1';
                     MemRead <= '1';
                     MemWrite <= '0';
@@ -49,7 +49,7 @@ begin
                     ALUOp <= "00";
                 when "000000" => -- add
                     PCWriteCond <= '0';
-                    PCWrite <= '0';
+                    PCWrite <= '1';
                     IorD <= '0';
                     MemRead <= '0';
                     MemWrite <= '0';
@@ -77,7 +77,7 @@ begin
                     ALUOp <= "10";
                 when "000100" => -- beq
                     PCWriteCond <= '1';
-                    PCWrite <= '0';
+                    PCWrite <= '1';
                     IorD <= '0';
                     MemRead <= '0';
                     MemWrite <= '0';
